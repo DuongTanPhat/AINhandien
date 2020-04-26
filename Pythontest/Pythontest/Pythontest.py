@@ -1,26 +1,52 @@
-#import numpy as np
-#import cv2
-#import matplotlib.pyplot as plt
-
 import numpy as np
 import cv2 as cv
-img = cv.imread('n3.jpg')
-gray= cv.cvtColor(img,cv.COLOR_BGR2GRAY)
-cv.Laplacian(gray,img)
-sift = cv.xfeatures2d.SIFT_create()
-kp = sift.detect(img,None)
+#import matplotlib.pyplot as plt
 
+import tkinter as tk
+from tkinter import filedialog
+window = tk.Tk()
+window.title("AI Nhan dien")
+
+myLabel = tk.Label(window,text="Nhap duong dan: " )
+myLabel2 = tk.Label(window,text="" )
+window.geometry('350x200')
+myLabel.grid(column = 0,row=1)
+myLabel2.grid(column = 0,row=4)
+url=""
+def clicked_open():
+    window.filename = tk.filedialog.askopenfilename(title="Select A File", filetype=(("jpg files","*.jpg"),("png files","*.png"),("all files", "*")))
+    myLabel2.config(text=window.filename).pack()
+bt = tk.Button(window,text="Open File", command=clicked_open)
+def clicked_sift():
+    img = cv.imread(window.filename)
+    gray= cv.cvtColor(img,cv.COLOR_BGR2GRAY)
+#cv.Laplacian(gray,img)
+    sift = cv.xfeatures2d.SIFT_create()
+    kp = sift.detect(img,None)
+#cv.Laplacian()
 #img=cv2.drawKeypoints(gray,kp)
 
 #cv2.imwrite('sift_keypoints.jpg',img)
-kp,des = sift.compute(img,kp)
-print(kp[0])
+    kp,des = sift.compute(img,kp)
 
-img=cv.drawKeypoints(img,kp,img,flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-cv.imshow('ex',img)
-cv.waitKey(0)
-cv.destroyAllWindows()
-#cv.imwrite('11222.jpg',img)
+
+    img=cv.drawKeypoints(img,kp,img,flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+    cv.imshow('ex',img)
+    cv.imwrite('11222.jpg',img)
+    cv.waitKey(0)
+    cv.destroyAllWindows()
+ 
+bt2 = tk.Button(window,text="SIFT", command=clicked_sift)
+bt2.grid(column = 3,row = 3)
+bt.grid(column =1,row = 0)
+window.mainloop()    
+
+
+
+
+
+
+
 
 
 
