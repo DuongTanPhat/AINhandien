@@ -55,9 +55,10 @@ for i in range(10):
 # Generate random points for the class 1
 #------------------------ 2. Set up the support vector machines parameters --------------------
 svm = np.empty((10),dtype = cv.ml_SVM)
+print('Starting training process')
 for i in range(10):
 
-    print('Starting training process')
+    
 ## [init]
     
     svm[i] = cv.ml.SVM_create()
@@ -136,11 +137,12 @@ myLabel2 = tk.Label(window,text="" )
 window.geometry('350x200')
 myLabel.grid(column = 0,row=1)
 myLabel2.grid(column = 1,row=1)
-url=""
+myLabel3 = tk.Label(window,text="" )
+myLabel3.grid(column = 1,row=5)
 respond = np.empty((10, 1), dtype=np.int32)
 def clicked_open():
-    window.filename = tk.filedialog.askopenfilename(title="Select A File", filetype=(("jpg files","*.jpg"),("png files","*.png"),("all files", "*")))
-    myLabel2.config(text=window.filename).pack()
+    window.filename = tk.filedialog.askopenfilename(title="Select A File", filetype=(("all files", "*"),("jpg files","*.jpg"),("png files","*.png"),("jpeg files","*.jpeg")))
+    myLabel2.config(text=window.filename)
 bt = tk.Button(window,text="Open File", command=clicked_open)
 def clicked_sift():
     imgnew = cv.imread(window.filename)
@@ -161,13 +163,25 @@ def clicked_sift():
         datalist[j] = [kp[j].size,kp[j].pt[0],kp[j].pt[1],kp[j].angle]
     datalist=sorted(datalist,key=operator.itemgetter(0))
     datalist.reverse();
+    hoa = 0;
+    phat =0;
     for i in range(10):
         sampleMat = np.matrix([datalist[i]], dtype=np.float32)
         respond[i]=svm[i].predict(sampleMat)[1]
+        if respond[i]==1 :
+            hoa+=1;
+        else:
+            phat+=1;
+    if hoa > phat:
+        myLabel3.config(text="Chữ ký của Hòa "+str(hoa*10)+"%")
+    elif hoa<phat:
+        myLabel3.config(text="Chữ ký của Phát "+str(phat*10)+"%")
+    else:
+        myLabel3.config(text="Chưa nhận diện được")
     print(respond[0:10])
     
 
-bt2 = tk.Button(window,text="SIFT", command=clicked_sift)
+bt2 = tk.Button(window,text="Nhan dien", command=clicked_sift)
 bt2.grid(column = 0,row = 3)
 bt.grid(column =0,row = 0)
 window.mainloop()    
