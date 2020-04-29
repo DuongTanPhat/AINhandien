@@ -8,13 +8,10 @@ import operator
 
 
 NTRAINING_SAMPLES = 10 # Number of training samples per class
-FRAC_LINEAR_SEP = 0.9   # Fraction of samples which compose the linear separable part
 
 # Data for visual representation
-WIDTH = 512
-HEIGHT = 512
-I = np.zeros((HEIGHT, WIDTH, 3), dtype=np.uint8)
-trainDataSign = np.empty((10, 2*NTRAINING_SAMPLES, 4), dtype=np.float32)
+
+trainDataSign = np.empty((10,2*NTRAINING_SAMPLES, 4), dtype=np.float32)
 labels = np.empty((2*NTRAINING_SAMPLES, 1), dtype=np.int32)
 labels[0:NTRAINING_SAMPLES,:] = 1                   # Class 1
 labels[NTRAINING_SAMPLES:2*NTRAINING_SAMPLES,:] = 2 # Class 2
@@ -23,13 +20,11 @@ for i in range(10):
     url = "H:/Github/AINhandien/ex/hoa/hoa"+str(i+1)+".jpg"
     img = cv.imread(url)
     img2 = cv.imread(url)
-
     img2 = cv.resize(img,(800,400))
     gray= cv.cvtColor(img2,cv.COLOR_BGR2GRAY)
     sift = cv.xfeatures2d.SIFT_create()
-    kp= sift.detect(img2,None)
-    kp,des = sift.compute(img2,kp)
-    img2=cv.drawKeypoints(img2,kp,img2,flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+    kp= sift.detect(gray,None)
+    kp,des = sift.compute(gray,kp)
     datalist = np.empty((len(kp),4),dtype = np.float32)
     for j in range(len(kp)):
         datalist[j] = [kp[j].size,kp[j].pt[0],kp[j].pt[1],kp[j].angle]
@@ -45,9 +40,8 @@ for i in range(10):
     img2 = cv.resize(img,(800,400))
     gray= cv.cvtColor(img2,cv.COLOR_BGR2GRAY)
     sift = cv.xfeatures2d.SIFT_create()
-    kp= sift.detect(img2,None)
-    kp,des = sift.compute(img2,kp)
-    img2=cv.drawKeypoints(img2,kp,img2,flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+    kp= sift.detect(gray,None)
+    kp,des = sift.compute(gray,kp)
     datalist = np.empty((len(kp),4),dtype = np.float32)
     for j in range(len(kp)):
         datalist[j] = [kp[j].size,kp[j].pt[0],kp[j].pt[1],kp[j].angle]
@@ -56,16 +50,13 @@ for i in range(10):
     for j in range(10):
         trainDataSign[j,i+10,0:4]=datalist[j]
 
-rng.seed(100) # Random value generation class
-
-# Set up the linearly separable part of the training data
-nLinearSamples = int(FRAC_LINEAR_SEP * NTRAINING_SAMPLES)
 
 ## [setup1]
 # Generate random points for the class 1
 #------------------------ 2. Set up the support vector machines parameters --------------------
 svm = np.empty((10),dtype = cv.ml_SVM)
 for i in range(10):
+
     print('Starting training process')
 ## [init]
     
@@ -80,7 +71,7 @@ for i in range(10):
 ## [train]
     svm[i].train(trainDataSign[i], cv.ml.ROW_SAMPLE, labels)
 ## [train]
-    print('Finished training process')
+print('Finished training process')
 
 #------------------------ 4. Show the decision regions ----------------------------------------
 ## [show]
@@ -137,26 +128,6 @@ for i in range(10):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 window = tk.Tk()
 window.title("AI Nhan dien")
 
@@ -166,27 +137,35 @@ window.geometry('350x200')
 myLabel.grid(column = 0,row=1)
 myLabel2.grid(column = 1,row=1)
 url=""
+respond = np.empty((10, 1), dtype=np.int32)
 def clicked_open():
     window.filename = tk.filedialog.askopenfilename(title="Select A File", filetype=(("jpg files","*.jpg"),("png files","*.png"),("all files", "*")))
     myLabel2.config(text=window.filename).pack()
 bt = tk.Button(window,text="Open File", command=clicked_open)
 def clicked_sift():
-    img = cv.imread(window.filename)
-    gray= cv.cvtColor(img,cv.COLOR_BGR2GRAY)
+    imgnew = cv.imread(window.filename)
+    imgnew2 = cv.resize(imgnew,(800,400))
+    gray= cv.cvtColor(imgnew2,cv.COLOR_BGR2GRAY)
     
     sift = cv.xfeatures2d.SIFT_create()
-    kp = sift.detect(img,None)
+    kp = sift.detect(gray,None)
     #cv.Laplacian()
 #img=cv2.drawKeypoints(gray,kp)
 
 #cv2.imwrite('sift_keypoints.jpg',img)
-    kp,des = sift.compute(img,kp)
+    kp,des = sift.compute(gray,kp)
 
-    img=cv.drawKeypoints(img,kp,img,flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-    cv.imshow('ex',img)
-    cv.imwrite('12.jpg',img)
-    cv.waitKey(0)
-    cv.destroyAllWindows()
+    #img=cv.drawKeypoints(img,kp,img,flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+    datalist = np.empty((len(kp),4),dtype = np.float32)
+    for j in range(len(kp)):
+        datalist[j] = [kp[j].size,kp[j].pt[0],kp[j].pt[1],kp[j].angle]
+    datalist=sorted(datalist,key=operator.itemgetter(0))
+    datalist.reverse();
+    for i in range(10):
+        sampleMat = np.matrix([datalist[i]], dtype=np.float32)
+        respond[i]=svm[i].predict(sampleMat)[1]
+    print(respond[0:10])
+    
 
 bt2 = tk.Button(window,text="SIFT", command=clicked_sift)
 bt2.grid(column = 0,row = 3)
