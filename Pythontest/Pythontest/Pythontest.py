@@ -8,14 +8,18 @@ import operator
 
 
 NTRAINING_SAMPLES = 10 # Number of training samples per class
-
+NUMBER_KEYPOINT = 10
+NUMBER_OBJECT = 3
 # Data for visual representation
 
-trainDataSign = np.empty((10,2*NTRAINING_SAMPLES, 4), dtype=np.float32)
-labels = np.empty((2*NTRAINING_SAMPLES, 1), dtype=np.int32)
-labels[0:NTRAINING_SAMPLES,:] = 1                   # Class 1
-labels[NTRAINING_SAMPLES:2*NTRAINING_SAMPLES,:] = 2 # Class 2
+trainDataSign = np.empty((NUMBER_KEYPOINT,NUMBER_OBJECT*NTRAINING_SAMPLES, 4), dtype=np.float32)
+labels = np.empty((NUMBER_OBJECT*NTRAINING_SAMPLES, 1), dtype=np.int32)
+labels[0:NTRAINING_SAMPLES,:] = 1                       # Class 1
+labels[NTRAINING_SAMPLES:2*NTRAINING_SAMPLES,:] = 2     # Class 2
+labels[2*NTRAINING_SAMPLES:3*NTRAINING_SAMPLES,:] = 3    # Class 3
+
 # --------------------- 1. Set up training data randomly ---------------------------------------
+print('Starting loading data process')
 for i in range(10):
     url = "H:/Github/AINhandien/ex/hoa/hoa"+str(i+1)+".jpg"
     img = cv.imread(url)
@@ -30,7 +34,7 @@ for i in range(10):
         datalist[j] = [kp[j].size,kp[j].pt[0],kp[j].pt[1],kp[j].angle]
     datalist=sorted(datalist,key=operator.itemgetter(0))
     datalist.reverse();
-    for j in range(10):
+    for j in range(NUMBER_KEYPOINT):
         trainDataSign[j,i,0:4]=datalist[j]
 for i in range(10):
     url = "H:/Github/AINhandien/ex/phat/phat"+str(i+1)+".jpg"
@@ -47,16 +51,32 @@ for i in range(10):
         datalist[j] = [kp[j].size,kp[j].pt[0],kp[j].pt[1],kp[j].angle]
     datalist=sorted(datalist,key=operator.itemgetter(0))
     datalist.reverse();
-    for j in range(10):
+    for j in range(NUMBER_KEYPOINT):
         trainDataSign[j,i+10,0:4]=datalist[j]
+for i in range(10):
+    url = "H:/Github/AINhandien/ex/dung/dung"+str(i+1+10)+".jpg"
+    img = cv.imread(url)
+    img2 = cv.imread(url)
 
-
+    img2 = cv.resize(img,(800,400))
+    gray= cv.cvtColor(img2,cv.COLOR_BGR2GRAY)
+    sift = cv.xfeatures2d.SIFT_create()
+    kp= sift.detect(gray,None)
+    kp,des = sift.compute(gray,kp)
+    datalist = np.empty((len(kp),4),dtype = np.float32)
+    for j in range(len(kp)):
+        datalist[j] = [kp[j].size,kp[j].pt[0],kp[j].pt[1],kp[j].angle]
+    datalist=sorted(datalist,key=operator.itemgetter(0))
+    datalist.reverse();
+    for j in range(NUMBER_KEYPOINT):
+        trainDataSign[j,i+20,0:4]=datalist[j]
+print('Finished loading data process')
 ## [setup1]
 # Generate random points for the class 1
 #------------------------ 2. Set up the support vector machines parameters --------------------
-svm = np.empty((10),dtype = cv.ml_SVM)
+svm = np.empty((NUMBER_KEYPOINT),dtype = cv.ml_SVM)
 print('Starting training process')
-for i in range(10):
+for i in range(NUMBER_KEYPOINT):
 
     
 ## [init]
@@ -64,7 +84,10 @@ for i in range(10):
     svm[i] = cv.ml.SVM_create()
     svm[i].setType(cv.ml.SVM_C_SVC)
     svm[i].setC(0.1)
-    svm[i].setKernel(cv.ml.SVM_LINEAR)
+    svm[i].setGamma(1)
+    svm[i].setCoef0(0)
+    svm[i].setDegree(2)
+    svm[i].setKernel(cv.ml.SVM_POLY)
     svm[i].setTermCriteria((cv.TERM_CRITERIA_MAX_ITER, int(1e7), 1e-6))
 ## [init]
 
@@ -73,61 +96,6 @@ for i in range(10):
     svm[i].train(trainDataSign[i], cv.ml.ROW_SAMPLE, labels)
 ## [train]
 print('Finished training process')
-
-#------------------------ 4. Show the decision regions ----------------------------------------
-## [show]
-# green = (0,100,0)
-# blue = (100,0,0)
-# for i in range(I.shape[0]):
-#     for j in range(I.shape[1]):
-#         sampleMat = np.matrix([[j,i]], dtype=np.float32)
-#         response = svm[0].predict(sampleMat)[1]
-
-#         if response == 1:
-#             I[i,j] = green
-#         elif response == 2:
-#             I[i,j] = blue
-# ## [show]
-
-# #----------------------- 5. Show the training data --------------------------------------------
-# ## [show_data]
-# thick = -1
-# # Class 1
-# for i in range(NTRAINING_SAMPLES):
-#     px = trainDataSign[0,i,0]
-#     py = trainDataSign[0,i,1]
-#     cv.circle(I, (px, py), 3, (0, 255, 0), thick)
-
-# # Class 2
-# for i in range(NTRAINING_SAMPLES, 2*NTRAINING_SAMPLES):
-#     px = trainDataSign[0,i,0]
-#     py = trainDataSign[0,i,1]
-#     cv.circle(I, (px, py), 3, (255, 0, 0), thick)
-# ## [show_data]
-
-# #------------------------- 6. Show support vectors --------------------------------------------
-# ## [show_vectors]
-# thick = 2
-# sv = svm[0].getUncompressedSupportVectors()
-
-# for i in range(sv.shape[0]):
-#     cv.circle(I, (sv[i,0], sv[i,1]), 6, (128, 128, 128), thick)
-# ## [show_vectors]
-
-# cv.imwrite('result.png', I)                      # save the Image
-# cv.imshow('SVM for Non-Linear Training Data', I) # show it to the user
-# cv.waitKey()
-
-
-
-
-
-
-
-
-
-
-
 
 window = tk.Tk()
 window.title("AI Nhan dien")
@@ -139,7 +107,7 @@ myLabel.grid(column = 0,row=1)
 myLabel2.grid(column = 1,row=1)
 myLabel3 = tk.Label(window,text="" )
 myLabel3.grid(column = 1,row=5)
-respond = np.empty((10, 1), dtype=np.int32)
+respond = np.empty((NUMBER_KEYPOINT, 1), dtype=np.int32)
 def clicked_open():
     window.filename = tk.filedialog.askopenfilename(title="Select A File", filetype=(("all files", "*"),("jpg files","*.jpg"),("png files","*.png"),("jpeg files","*.jpeg")))
     myLabel2.config(text=window.filename)
@@ -163,22 +131,25 @@ def clicked_sift():
         datalist[j] = [kp[j].size,kp[j].pt[0],kp[j].pt[1],kp[j].angle]
     datalist=sorted(datalist,key=operator.itemgetter(0))
     datalist.reverse();
-    hoa = 0;
+    hoa  =0;
     phat =0;
-    for i in range(10):
+    dung =0;
+    for i in range(NUMBER_KEYPOINT):
         sampleMat = np.matrix([datalist[i]], dtype=np.float32)
         respond[i]=svm[i].predict(sampleMat)[1]
         if respond[i]==1 :
             hoa+=1;
-        else:
+        elif respond[i]==2:
             phat+=1;
-    if hoa > phat:
-        myLabel3.config(text="Chữ ký của Hòa "+str(hoa*10)+"%")
-    elif hoa<phat:
-        myLabel3.config(text="Chữ ký của Phát "+str(phat*10)+"%")
+        else:
+            dung+=1;
+    if max(hoa,phat,dung) == hoa:
+        myLabel3.config(text="Chữ ký của Hòa "+str(hoa*(100/NUMBER_KEYPOINT))+"%")
+    elif max(hoa,phat,dung) == phat:
+        myLabel3.config(text="Chữ ký của Phát "+str(phat*(100/NUMBER_KEYPOINT))+"%")
     else:
-        myLabel3.config(text="Chưa nhận diện được")
-    print(respond[0:10])
+        myLabel3.config(text="Chữ ký của Dũng "+str(dung*(100/NUMBER_KEYPOINT))+"%")
+    print(respond[0:NUMBER_KEYPOINT])
     
 
 bt2 = tk.Button(window,text="Nhan dien", command=clicked_sift)
