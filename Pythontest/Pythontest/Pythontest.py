@@ -9,14 +9,14 @@ import operator
 
 NTRAINING_SAMPLES = 10 # Number of training samples per class
 NUMBER_KEYPOINT = 10
-NUMBER_OBJECT = 3
+NUMBER_OBJECT = 2
 # Data for visual representation
 
 trainDataSign = np.empty((NUMBER_KEYPOINT,NUMBER_OBJECT*NTRAINING_SAMPLES, 4), dtype=np.float32)
 labels = np.empty((NUMBER_OBJECT*NTRAINING_SAMPLES, 1), dtype=np.int32)
 labels[0:NTRAINING_SAMPLES,:] = 1                       # Class 1
 labels[NTRAINING_SAMPLES:2*NTRAINING_SAMPLES,:] = 2     # Class 2
-labels[2*NTRAINING_SAMPLES:3*NTRAINING_SAMPLES,:] = 3    # Class 3
+#labels[2*NTRAINING_SAMPLES:3*NTRAINING_SAMPLES,:] = 3    # Class 3
 
 # --------------------- 1. Set up training data randomly ---------------------------------------
 print('Starting loading data process')
@@ -24,8 +24,9 @@ for i in range(10):
     url = "H:/Github/AINhandien/ex/hoa/hoa"+str(i+1)+".jpg"
     img = cv.imread(url)
     img2 = cv.imread(url)
-    img2 = cv.resize(img,(800,400))
+    img2 = cv.resize(img2,(800,400))
     gray= cv.cvtColor(img2,cv.COLOR_BGR2GRAY)
+    dst = cv.cornerHarris(gray,2,5,0.04)
     sift = cv.xfeatures2d.SIFT_create()
     kp= sift.detect(gray,None)
     kp,des = sift.compute(gray,kp)
@@ -53,23 +54,23 @@ for i in range(10):
     datalist.reverse();
     for j in range(NUMBER_KEYPOINT):
         trainDataSign[j,i+10,0:4]=datalist[j]
-for i in range(10):
-    url = "H:/Github/AINhandien/ex/dung/dung"+str(i+1+10)+".jpg"
-    img = cv.imread(url)
-    img2 = cv.imread(url)
+# for i in range(10):
+#     url = "H:/Github/AINhandien/ex/dung/dung"+str(i+1+10)+".jpg"
+#     img = cv.imread(url)
+#     img2 = cv.imread(url)
 
-    img2 = cv.resize(img,(800,400))
-    gray= cv.cvtColor(img2,cv.COLOR_BGR2GRAY)
-    sift = cv.xfeatures2d.SIFT_create()
-    kp= sift.detect(gray,None)
-    kp,des = sift.compute(gray,kp)
-    datalist = np.empty((len(kp),4),dtype = np.float32)
-    for j in range(len(kp)):
-        datalist[j] = [kp[j].size,kp[j].pt[0],kp[j].pt[1],kp[j].angle]
-    datalist=sorted(datalist,key=operator.itemgetter(0))
-    datalist.reverse();
-    for j in range(NUMBER_KEYPOINT):
-        trainDataSign[j,i+20,0:4]=datalist[j]
+#     img2 = cv.resize(img,(800,400))
+#     gray= cv.cvtColor(img2,cv.COLOR_BGR2GRAY)
+#     sift = cv.xfeatures2d.SIFT_create()
+#     kp= sift.detect(gray,None)
+#     kp,des = sift.compute(gray,kp)
+#     datalist = np.empty((len(kp),4),dtype = np.float32)
+#     for j in range(len(kp)):
+#         datalist[j] = [kp[j].size,kp[j].pt[0],kp[j].pt[1],kp[j].angle]
+#     datalist=sorted(datalist,key=operator.itemgetter(0))
+#     datalist.reverse();
+#     for j in range(NUMBER_KEYPOINT):
+#         trainDataSign[j,i+20,0:4]=datalist[j]
 print('Finished loading data process')
 ## [setup1]
 # Generate random points for the class 1
