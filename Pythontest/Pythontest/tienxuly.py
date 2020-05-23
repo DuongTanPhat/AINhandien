@@ -93,12 +93,6 @@ def donganh(img):
     a = np.array(([-1,-1,-1],[-1,-1,-1],[-1,-1,-1]))
     img = cv.erode(img,a)
     img = cv.dilate(img,a)
-    img = cv.erode(img,a)
-    img = cv.dilate(img,a)
-    img = cv.erode(img,a)
-    img = cv.dilate(img,a)
-    img = cv.erode(img,a)
-    img = cv.dilate(img,a)
     return img
 def xulyanh(url):
     img = cv.imread(url)

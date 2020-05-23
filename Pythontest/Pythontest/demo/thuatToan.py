@@ -1,19 +1,21 @@
 import cv2
 import numpy as np
 
-img = cv2.imread('test.jpg')
+img = cv2.imread("H:/Github/AINhandien/Pythontest/Pythontest/demo/anhtest.png")
 imgContour = img.copy()
 imgBlur = cv2.GaussianBlur(img, (7, 7), 1)
+
 imgGray = cv2.cvtColor(imgBlur, cv2.COLOR_BGR2GRAY)
 threshold1 = cv2.getTrackbarPos("Threshold1", "Parameters")
 threshold2 = cv2.getTrackbarPos("Threshold2", "Parameters")
 imgCanny = cv2.Canny(imgGray,threshold1,threshold2)
+
 kernel = np.ones((5, 5))
 imgDil = cv2.dilate(imgCanny, kernel, iterations=1)
 
 def dropImage(x1,y1,x2,y2):
     img_crop = img[y1:y1+y2,x1:x1+x2]
-    crop_name = 'crop/'+str(x1)+str(x2)+str(y1)+str(y2)+'_crop.jpg'
+    crop_name = "H:/Github/AINhandien/Pythontest/Pythontest/demo/crop/"+str(x1)+str(x2)+str(y1)+str(y2)+"_crop.jpg"
     cv2.imwrite(crop_name, img_crop)
 
 def getContours(img,imgContour):

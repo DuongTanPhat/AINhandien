@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-img=cv2.imread('hanh.jpg')
+img=cv2.imread('H:\\Datasign\\Duong\\33.jpg')
 img2 = cv2.resize(img,(800,400))
 cv2.imshow("imge origan", img2)
 gray = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)

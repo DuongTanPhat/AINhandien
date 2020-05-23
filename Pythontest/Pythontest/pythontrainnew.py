@@ -42,8 +42,8 @@ def docdactrung1(img):
                         datagoc.append([i,j])
                         count+=1 
     
-    # for i in range(count):
-    #     cv.circle(img,(int(datagoc[i][1]),int(datagoc[i][0])),3,(0,0,255),2)
+    for i in range(count):
+        cv.circle(img,(int(datagoc[i][1]),int(datagoc[i][0])),3,(0,0,255),2)
     # cv.imshow('ex2',img)
     # cv.waitKey(0)
     # cv.destroyAllWindows()
@@ -51,7 +51,7 @@ def docdactrung1(img):
     # tinh dac trung sift
     datakp = np.empty((len(kp),4),dtype = np.float32)
     for j in range(len(kp)):
-         datakp[j] = [kp[j].size,kp[j].pt[0],kp[j].pt[1],kp[j].angle]
+         datakp[j] = [kp[j].size,kp[j].pt[0],kp[j].pt[1],kp[j].]
     listkp = []
     kp2=[]
     count2 = 0
@@ -87,15 +87,15 @@ def docdactrung1(img):
     for i in range(count):
         # listkp[i][1] = listkp[i][1]*200/img.shape[0]
         # listkp[i][2]= listkp[i][2]*200/img.shape[1]
-        cv.circle(img,(int(listkp[i][1]),int(listkp[i][2])),3,(255,0,0),2)
+        #cv.circle(img,(int(listkp[i][1]),int(listkp[i][2])),3,(255,0,0),2)
         listkp[i][1] = listkp[i][1]*200/img.shape[1]
         listkp[i][2]= listkp[i][2]*200/img.shape[0]
-    # cv.imshow('ex2',img)
-    # cv.waitKey(0)
-    # cv.destroyAllWindows()
-    #listkp = np.array(listkp)
-    # img=cv.drawKeypoints(img,kp,img,flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
     
+    #listkp = np.array(listkp)
+    #img=cv.drawKeypoints(img,kp2,img,flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+    cv.imshow('ex2',img)
+    cv.waitKey(0)
+    cv.destroyAllWindows()
     listkp=sorted(listkp,key=operator.itemgetter(1))
     return listkp
 def docdactrungnhieu():
