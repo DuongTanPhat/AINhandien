@@ -19,7 +19,7 @@ def read_data():
     Y = [] #chứa label
     image_descriptors = []
     for i in range(10):
-        url = "H:/Github/AINhandien/ex/phat/phat"+str(i+1)+".jpg"
+        url = "H:/Github/AINhandien/ex/phat/"+str(i)+".jpg"
         img = cv.imread(url)
         img = cv.resize(img,(800,400))
         img = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
@@ -27,7 +27,7 @@ def read_data():
         X.append(img)
         Y.append(2)
     for i in range(10):
-        url = "H:/Github/AINhandien/ex/hoa/hoa"+str(i+11)+".jpg"
+        url = "H:/Github/AINhandien/ex/hoa/"+str(i)+".jpg"
         img = cv.imread(url)
         img = cv.resize(img,(800,400))
         img = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
@@ -184,7 +184,7 @@ def docdactrungnhieu():
     # for j in range(c-b):
     #     labellist.append(3)
     return listnew,labellist
-num_clusters = 10
+num_clusters = 5
 X,Y,image_descriptors = read_data()
 #image_descriptors = extract_sift_features(X)
 BoW =  kmeans_bow(image_descriptors,num_clusters)

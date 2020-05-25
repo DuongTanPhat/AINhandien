@@ -7,6 +7,7 @@ import random as rng
 import operator
 import math
 from tienxuly import xulyanh
+from demo.thuatToan import detectOj
 def khoangcachchenhlech(x1,y1,x2,y2):
     kc = 0
     kc = abs(x2-x1)+abs(y2-y1)
@@ -42,8 +43,8 @@ def docdactrung1(img):
                         datagoc.append([i,j])
                         count+=1 
     
-    for i in range(count):
-        cv.circle(img,(int(datagoc[i][1]),int(datagoc[i][0])),3,(0,0,255),2)
+    # for i in range(count):
+    #     cv.circle(img,(int(datagoc[i][1]),int(datagoc[i][0])),3,(0,0,255),2)
     # cv.imshow('ex2',img)
     # cv.waitKey(0)
     # cv.destroyAllWindows()
@@ -51,7 +52,7 @@ def docdactrung1(img):
     # tinh dac trung sift
     datakp = np.empty((len(kp),4),dtype = np.float32)
     for j in range(len(kp)):
-         datakp[j] = [kp[j].size,kp[j].pt[0],kp[j].pt[1],kp[j].]
+         datakp[j] = [kp[j].size,kp[j].pt[0],kp[j].pt[1],kp[j].angle]
     listkp = []
     kp2=[]
     count2 = 0
@@ -93,9 +94,9 @@ def docdactrung1(img):
     
     #listkp = np.array(listkp)
     #img=cv.drawKeypoints(img,kp2,img,flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-    cv.imshow('ex2',img)
-    cv.waitKey(0)
-    cv.destroyAllWindows()
+    # cv.imshow('ex2',img)
+    # cv.waitKey(0)
+    # cv.destroyAllWindows()
     listkp=sorted(listkp,key=operator.itemgetter(1))
     return listkp
 def docdactrungnhieu():
@@ -126,38 +127,40 @@ def docdactrungnhieu():
     for i in range(10):
         url = "H:/Github/AINhandien/ex/hoa/"+str(i)+".jpg"
         img = cv.imread(url)
-        listkp = docdactrung1(img)
-        for j in range(len(listkp)):
-            if listkp[j][1] <= 20:
-                listtrain0.append(listkp[j])
-                listlb0.append(1)
-            elif listkp[j][1] > 20 and listkp[j][1]<=40:
-                listtrain1.append(listkp[j])
-                listlb1.append(1)
-            elif listkp[j][1] > 40 and listkp[j][1]<=60:
-                listtrain2.append(listkp[j])
-                listlb2.append(1)
-            elif listkp[j][1] > 60 and listkp[j][1]<=80:
-                listtrain3.append(listkp[j])
-                listlb3.append(1)
-            elif listkp[j][1] > 80 and listkp[j][1]<=100:
-                listtrain4.append(listkp[j])
-                listlb4.append(1)
-            elif listkp[j][1] > 100 and listkp[j][1]<=120:
-                listtrain5.append(listkp[j])
-                listlb5.append(1)
-            elif listkp[j][1] > 120 and listkp[j][1]<=140:
-                listtrain6.append(listkp[j])
-                listlb6.append(1)
-            elif listkp[j][1] > 140 and listkp[j][1]<=160:
-                listtrain7.append(listkp[j])
-                listlb7.append(1)
-            elif listkp[j][1] > 160 and listkp[j][1]<=180:
-                listtrain8.append(listkp[j])
-                listlb8.append(1)
-            elif listkp[j][1] > 180 and listkp[j][1]<=200:
-                listtrain9.append(listkp[j])
-                listlb9.append(1)
+        img_list = detectOj(img)
+        for k in range(len(img_list)):
+            listkp = docdactrung1(img_list[k])
+            for j in range(len(listkp)):
+                if listkp[j][1] <= 20:
+                    listtrain0.append(listkp[j])
+                    listlb0.append(1)
+                elif listkp[j][1] > 20 and listkp[j][1]<=40:
+                    listtrain1.append(listkp[j])
+                    listlb1.append(1)
+                elif listkp[j][1] > 40 and listkp[j][1]<=60:
+                    listtrain2.append(listkp[j])
+                    listlb2.append(1)
+                elif listkp[j][1] > 60 and listkp[j][1]<=80:
+                    listtrain3.append(listkp[j])
+                    listlb3.append(1)
+                elif listkp[j][1] > 80 and listkp[j][1]<=100:
+                    listtrain4.append(listkp[j])
+                    listlb4.append(1)
+                elif listkp[j][1] > 100 and listkp[j][1]<=120:
+                    listtrain5.append(listkp[j])
+                    listlb5.append(1)
+                elif listkp[j][1] > 120 and listkp[j][1]<=140:
+                    listtrain6.append(listkp[j])
+                    listlb6.append(1)
+                elif listkp[j][1] > 140 and listkp[j][1]<=160:
+                    listtrain7.append(listkp[j])
+                    listlb7.append(1)
+                elif listkp[j][1] > 160 and listkp[j][1]<=180:
+                    listtrain8.append(listkp[j])
+                    listlb8.append(1)
+                elif listkp[j][1] > 180 and listkp[j][1]<=200:
+                    listtrain9.append(listkp[j])
+                    listlb9.append(1)
         #listnew[j].append(listkp[j])
         #listnew += listkp
 
@@ -168,38 +171,40 @@ def docdactrungnhieu():
     for i in range(10):
         url = "H:/Github/AINhandien/ex/phat/"+str(i)+".jpg"
         img = cv.imread(url)
-        listkp = docdactrung1(img)
-        for j in range(len(listkp)):
-            if listkp[j][1] <= 20:
-                listtrain0.append(listkp[j])
-                listlb0.append(2)
-            elif listkp[j][1] > 20 and listkp[j][1]<=40:
-                listtrain1.append(listkp[j])
-                listlb1.append(2)
-            elif listkp[j][1] > 40 and listkp[j][1]<=60:
-                listtrain2.append(listkp[j])
-                listlb2.append(2)
-            elif listkp[j][1] > 60 and listkp[j][1]<=80:
-                listtrain3.append(listkp[j])
-                listlb3.append(2)
-            elif listkp[j][1] > 80 and listkp[j][1]<=100:
-                listtrain4.append(listkp[j])
-                listlb4.append(2)
-            elif listkp[j][1] > 100 and listkp[j][1]<=120:
-                listtrain5.append(listkp[j])
-                listlb5.append(2)
-            elif listkp[j][1] > 120 and listkp[j][1]<=140:
-                listtrain6.append(listkp[j])
-                listlb6.append(2)
-            elif listkp[j][1] > 140 and listkp[j][1]<=160:
-                listtrain7.append(listkp[j])
-                listlb7.append(2)
-            elif listkp[j][1] > 160 and listkp[j][1]<=180:
-                listtrain8.append(listkp[j])
-                listlb8.append(2)
-            elif listkp[j][1] > 180 and listkp[j][1]<=200:
-                listtrain9.append(listkp[j])
-                listlb9.append(2)
+        img_list = detectOj(img)
+        for k in range(len(img_list)):
+            listkp = docdactrung1(img_list[k])
+            for j in range(len(listkp)):
+                if listkp[j][1] <= 20:
+                    listtrain0.append(listkp[j])
+                    listlb0.append(2)
+                elif listkp[j][1] > 20 and listkp[j][1]<=40:
+                    listtrain1.append(listkp[j])
+                    listlb1.append(2)
+                elif listkp[j][1] > 40 and listkp[j][1]<=60:
+                    listtrain2.append(listkp[j])
+                    listlb2.append(2)
+                elif listkp[j][1] > 60 and listkp[j][1]<=80:
+                    listtrain3.append(listkp[j])
+                    listlb3.append(2)
+                elif listkp[j][1] > 80 and listkp[j][1]<=100:
+                    listtrain4.append(listkp[j])
+                    listlb4.append(2)
+                elif listkp[j][1] > 100 and listkp[j][1]<=120:
+                    listtrain5.append(listkp[j])
+                    listlb5.append(2)
+                elif listkp[j][1] > 120 and listkp[j][1]<=140:
+                    listtrain6.append(listkp[j])
+                    listlb6.append(2)
+                elif listkp[j][1] > 140 and listkp[j][1]<=160:
+                    listtrain7.append(listkp[j])
+                    listlb7.append(2)
+                elif listkp[j][1] > 160 and listkp[j][1]<=180:
+                    listtrain8.append(listkp[j])
+                    listlb8.append(2)
+                elif listkp[j][1] > 180 and listkp[j][1]<=200:
+                    listtrain9.append(listkp[j])
+                    listlb9.append(2)
     # for i in range(10):
     #     url = "H:/Github/AINhandien/ex/dung/"+str(i)+".jpg"
     #     img = cv.imread(url)
@@ -280,7 +285,7 @@ for i in range(10):
     svm[i].setGamma(1)
     svm[i].setCoef0(0)
     svm[i].setDegree(3)
-    svm[i].setKernel(cv.ml.SVM_POLY)
+    svm[i].setKernel(cv.ml.SVM_INTER)
     svm[i].setTermCriteria((cv.TERM_CRITERIA_MAX_ITER, int(1e7), 1e-6))
 ## [init]
 

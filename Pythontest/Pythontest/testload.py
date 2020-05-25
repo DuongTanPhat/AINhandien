@@ -1,19 +1,22 @@
 import numpy as np
 import cv2 as cv
 #import matplotlib.pyplot as plt
+from tkinter.ttk import Frame, Button, Style
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, BOTH
 import random as rng
 import operator
-import math
+from PIL import Image, ImageTk
 from tienxuly import xulyanh
+from demo.thuatToan import *
+
 def khoangcachchenhlech(x1,y1,x2,y2):
     kc = 0
     kc = abs(x2-x1)+abs(y2-y1)
     #kc = math.sqrt(math.pow(x2-x1,2)+math.pow(y2-y1,2))
     return kc
 def docdactrung1(img):
-    #img = cv.resize(img,(800,400))
+    img = cv.resize(img,(800,400))
     gray = img
     gray = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
     dst = cv.cornerHarris(gray,2,5,0.04)
@@ -132,91 +135,86 @@ myLabel3.grid(column = 1,row=5)
 def clicked_open():
     window.filename = tk.filedialog.askopenfilename(title="Select A File", filetype=(("all files", "*"),("jpg files","*.jpg"),("png files","*.png"),("jpeg files","*.jpeg")))
     myLabel2.config(text=window.filename)
-bt = tk.Button(window,text="Open File", command=clicked_open)
+bt = Button(window,text="Open File", command=clicked_open)
 def clicked_sift():
-    img = xulyanh(window.filename)
-    img = cv.cvtColor(img, cv.COLOR_GRAY2BGR)
-    listkp = docdactrung1(img)
-    listtrain0 = []
-    listtrain1 = []
-    listtrain2 = []
-    listtrain3 = []
-    listtrain4 = []
-    listtrain5 = []
-    listtrain6 = []
-    listtrain7 = []
-    listtrain8 = []
-    listtrain9 = []
-    for j in range(len(listkp)):
-        if listkp[j][1] <= 20:
+    img2 = cv.imread(window.filename)
+    img_list = detectOj(img2)
+    for k in range(len(img_list)):
+        cv.imshow('ex2',img_list[k])
+        cv.waitKey(0)
+        cv.destroyAllWindows()
+        img = xulyanh(img_list[k])
+        img = cv.cvtColor(img, cv.COLOR_GRAY2BGR)
+        listkp = docdactrung1(img)
+        listtrain0 = []
+        listtrain1 = []
+        listtrain2 = []
+        listtrain3 = []
+        listtrain4 = []
+        listtrain5 = []
+        listtrain6 = []
+        listtrain7 = []
+        listtrain8 = []
+        listtrain9 = []
+        for j in range(len(listkp)):
+            if listkp[j][1] <= 20:
                 listtrain0.append(listkp[j])
-        elif listkp[j][1] > 20 and listkp[j][1]<=40:
+            elif listkp[j][1] > 20 and listkp[j][1]<=40:
                 listtrain1.append(listkp[j])
-        elif listkp[j][1] > 40 and listkp[j][1]<=60:
+            elif listkp[j][1] > 40 and listkp[j][1]<=60:
                 listtrain2.append(listkp[j])
-        elif listkp[j][1] > 60 and listkp[j][1]<=80:
+            elif listkp[j][1] > 60 and listkp[j][1]<=80:
                 listtrain3.append(listkp[j])
-        elif listkp[j][1] > 80 and listkp[j][1]<=100:
+            elif listkp[j][1] > 80 and listkp[j][1]<=100:
                 listtrain4.append(listkp[j])
-        elif listkp[j][1] > 100 and listkp[j][1]<=120:
+            elif listkp[j][1] > 100 and listkp[j][1]<=120:
                 listtrain5.append(listkp[j])
-        elif listkp[j][1] > 120 and listkp[j][1]<=140:
+            elif listkp[j][1] > 120 and listkp[j][1]<=140:
                 listtrain6.append(listkp[j])
-        elif listkp[j][1] > 140 and listkp[j][1]<=160:
+            elif listkp[j][1] > 140 and listkp[j][1]<=160:
                 listtrain7.append(listkp[j])
-        elif listkp[j][1] > 160 and listkp[j][1]<=180:
+            elif listkp[j][1] > 160 and listkp[j][1]<=180:
                 listtrain8.append(listkp[j])
-        elif listkp[j][1] > 180 and listkp[j][1]<=200:
+            elif listkp[j][1] > 180 and listkp[j][1]<=200:
                 listtrain9.append(listkp[j])
-    datalist = []
-    datalist.append(listtrain0)
-    datalist.append(listtrain1)
-    datalist.append(listtrain2)
-    datalist.append(listtrain3)
-    datalist.append(listtrain4)
-    datalist.append(listtrain5)
-    datalist.append(listtrain6)
-    datalist.append(listtrain7)
-    datalist.append(listtrain8)
-    datalist.append(listtrain9)
-    hoa  =0
-    phat =0
-    dung =0
-    respond = 0
-    res = []
-    #respond = np.empty((len(listkp),1),dtype = np.int32)
-    for i in range(10):
-        for j in range(len(datalist[i])):
-            datalist[i][j] = np.array(datalist[i][j],dtype = np.float32)
-            sampleMat = np.matrix([datalist[i][j]], dtype=np.float32)
-            respond=svm[i].predict(sampleMat)[1]
-            res.append(respond)
-            if respond==1 :
-                hoa+=1;
-            elif respond==2:
-                phat+=1;
-            else:
-                dung+=1;
-    # respond = np.empty((len(dactrung), 1), dtype=np.int32)
-    # for i in range(dactrung.__len__()):
-    #     sampleMat = np.matrix([dactrung[i]], dtype=np.float32)
-    #     respond[i]=svm.predict(sampleMat)[1]
-    #     if respond[i]==1 :
-    #         hoa+=1
-    #     elif respond[i]==2:
-    #         phat+=1
-    #     else:
-    #         dung+=1
-    if max(hoa,phat,dung) == hoa:
-        myLabel3.config(text="Chữ ký của Hòa "+str(hoa*(100/len(listkp)))+"%")
-    elif max(hoa,phat,dung) == phat:
-        myLabel3.config(text="Chữ ký của Phát "+str(phat*(100/len(listkp)))+"%")
-    else:
-        myLabel3.config(text="Chữ ký của Dũng "+str(dung*(100/len(listkp)))+"%")
-    #print(res[0:len(listkp)])
-    
-
-bt2 = tk.Button(window,text="Nhan dien", command=clicked_sift)
+        datalist = []
+        datalist.append(listtrain0)
+        datalist.append(listtrain1)
+        datalist.append(listtrain2)
+        datalist.append(listtrain3)
+        datalist.append(listtrain4)
+        datalist.append(listtrain5)
+        datalist.append(listtrain6)
+        datalist.append(listtrain7)
+        datalist.append(listtrain8)
+        datalist.append(listtrain9)
+        hoa  =0
+        phat =0
+        dung =0
+        respond = 0
+        res = []
+        for i in range(10):
+            for j in range(len(datalist[i])):
+                datalist[i][j] = np.array(datalist[i][j],dtype = np.float32)
+                sampleMat = np.matrix([datalist[i][j]], dtype=np.float32)
+                respond=svm[i].predict(sampleMat)[1]
+                res.append(respond)
+                if respond==1 :
+                    hoa+=1;
+                elif respond==2:
+                    phat+=1;
+                else:
+                    dung+=1;
+        if max(hoa,phat,dung) == hoa:
+            myLabel3.config(text="Chữ ký của Hòa "+str(hoa*(100/len(listkp)))+"%")
+            window.update()
+        elif max(hoa,phat,dung) == phat:
+            myLabel3.config(text="Chữ ký của Phát "+str(phat*(100/len(listkp)))+"%")
+            window.update()
+        else:
+            myLabel3.config(text="Chữ ký của Dũng "+str(dung*(100/len(listkp)))+"%") 
+        #print(res[0:len(listkp)])
+bt2 = Button(window,text="Nhan dien", command=clicked_sift)
 bt2.grid(column = 0,row = 3)
 bt.grid(column =0,row = 0)
 window.mainloop()    
