@@ -25,6 +25,7 @@ def docdactrung1(img):
     img[dst>0.04*dst.max()] = [0,255,0]
     count = 0
     datagoc = []
+    #Loai bo cac diem goc gan nhau
     for i in range(img.shape[0]):
         for j in range(img.shape[1]): 
             if img[i,j,0]==0 and img[i,j,1]==255 and img[i,j,2]==0:
@@ -52,7 +53,7 @@ def docdactrung1(img):
     # tinh dac trung sift
     datakp = np.empty((len(kp),4),dtype = np.float32)
     for j in range(len(kp)):
-         datakp[j] = [kp[j].size,kp[j].pt[0],kp[j].pt[1],kp[j].angle]
+        datakp[j] = [kp[j].size,kp[j].pt[0],kp[j].pt[1],kp[j].angle]
     listkp = []
     kp2=[]
     count2 = 0
@@ -69,7 +70,7 @@ def docdactrung1(img):
     #             num += 1
     #             if(num>2): break
     #     num = 0
-    
+    # moi diem goc lay 1 keypoint gan nhat
     for i in range(count):
         kc = []
         for j in range(len(kp)):
@@ -124,7 +125,7 @@ def docdactrungnhieu():
     
     #trainDataSign = np.zeros((20,2*10, 4), dtype=np.int32)
     #listnew = trainDataSign
-    for i in range(10):
+    for i in range(20):
         url = "H:/Github/AINhandien/ex/hoa/"+str(i)+".jpg"
         img = cv.imread(url)
         img_list = detectOj(img)
@@ -168,7 +169,7 @@ def docdactrungnhieu():
     # a = len(listnew)
     # for i in range(a):
     #     labellist.append(1)
-    for i in range(10):
+    for i in range(20):
         url = "H:/Github/AINhandien/ex/phat/"+str(i)+".jpg"
         img = cv.imread(url)
         img_list = detectOj(img)

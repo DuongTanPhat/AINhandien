@@ -26,7 +26,7 @@ def getContours(img,imgDil,imgContour):
     for cnt in contours:
         area = cv2.contourArea(cnt)
         areaMin = cv2.getTrackbarPos("Area", "Parameters")
-        if area > 1000:
+        if area > 1500:
             peri = cv2.arcLength(cnt, True)
             approx = cv2.approxPolyDP(cnt, 0.02 * peri, True)
             x , y , w, h = cv2.boundingRect(approx)

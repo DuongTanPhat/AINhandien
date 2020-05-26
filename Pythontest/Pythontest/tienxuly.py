@@ -9,6 +9,7 @@ import operator
 import math
 import os
 import time
+import demo.thuatToan
 # window = tk.Tk()
 # window.title("AI Nhan dien")
 
@@ -20,7 +21,7 @@ import time
 # myLabel3 = tk.Label(window,text="" )
 # myLabel3.grid(column = 1,row=5)
 # filelist = []
-def clicked_open(filelist,myLabel2,window):
+def clicked_open(window,filelist,myLabel2):
     window.filename = tk.filedialog.askopenfilenames(title="Select A File", filetype=(("all files", "*"),("jpg files","*.jpg"),("png files","*.png"),("jpeg files","*.jpeg")))
     myLabel2.config(text=window.filename)
     filelist.clear()
@@ -148,7 +149,8 @@ def xulyanh(img):
 def clicked_xuly(filelist):
     if len(filelist) != 0:
         for i in range(len(filelist)):
-            img = xulyanh(filelist[i])
+            img = cv.imread(filelist[i])
+            img = xulyanh(img)
             cv.imwrite(str(i)+".jpg",img) 
 
 

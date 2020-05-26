@@ -10,13 +10,13 @@ gray= cv.cvtColor(img,cv.COLOR_BGR2GRAY)
 
 sift = cv.xfeatures2d.SIFT_create()
 kp = sift.detect(img,None)
-green = np.empty((1,3),dtype=np.ndarray)
-green = [0,255,0]
+#green = np.empty((1,3),dtype=np.ndarray)
+#green = [0,255,0]
 kp,des = sift.compute(img,kp)
 gray = np.float32(gray)
-dst = cv.cornerHarris(gray,2,5,0.04)
-img[dst>0.04*dst.max()] = [0,0,255]
-k = dst.max()*0.04
+#dst = cv.cornerHarris(gray,2,5,0.04)
+#img[dst>0.04*dst.max()] = [0,0,255]
+#k = dst.max()*0.04
 count = 0
 datagoc = []
 # for i in range(img.shape[0]):

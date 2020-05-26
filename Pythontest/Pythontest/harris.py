@@ -11,9 +11,9 @@ def Harris(img):
 	iy = ndimage.sobel(img, 1)
 	
     # Tính các thành phần A, C, B
-	ix2 = ix * ix
-	iy2 = iy * iy
-	ixy = ix * iy
+	ix2 = ix * ix 	#	A
+	iy2 = iy * iy	#	B
+	ixy = ix * iy	#	C
 
     # Lọc nhiễu A, B, C bằng bộ lọc Gaussian
 	ix2 = ndimage.gaussian_filter(ix2, sigma=2)
@@ -21,25 +21,25 @@ def Harris(img):
 	ixy = ndimage.gaussian_filter(ixy, sigma=2)
 
 	result = np.zeros((img.shape[0], img.shape[1]))
-	r = np.zeros((img.shape[0], img.shape[1]))
+	f = np.zeros((img.shape[0], img.shape[1]))
 	rmax = 0
 
-    # Tìm ma trận r gồm điểm f của từng pixel 
+    # Tìm ma trận f gồm gia tri f của từng pixel 
 	for i in range(img.shape[0]):
 		for j in range(img.shape[1]):
 			m = np.array([[ix2[i, j], ixy[i, j]], [ixy[i, j], iy2[i, j]]], dtype=np.float64)
-			r[i, j] = np.linalg.det(m) - 0.06 * (np.power(np.trace(m), 2))
-			if r[i, j] > rmax:
-				rmax = r[i, j]
+			f[i, j] = np.linalg.det(m) - 0.06 * (np.power(np.trace(m), 2))
+			if f[i, j] > rmax:
+				rmax = f[i, j]
 	
-    # Trực quan hóa việc phát hiện góc với ngưỡng bằng 0.01*max[r] với khung cửa sổ 3x3
+    # Trực quan hóa việc phát hiện góc với ngưỡng bằng 0.06*max[r] với khung cửa sổ 3x3
 	for i in range(img.shape[0] - 1):
 		for j in range(img.shape[1] - 1):
-			if r[i, j] > 0.06 * rmax \
-            and r[i, j] > r[i-1, j-1] \
-            and r[i, j] > r[i-1, j+1] \
-            and r[i, j] > r[i+1, j-1] \
-            and r[i, j] > r[i+1, j+1]:
+			if f[i, j] > 0.06 * rmax \
+            and f[i, j] > f[i-1, j-1] \
+            and f[i, j] > f[i-1, j+1] \
+            and f[i, j] > f[i+1, j-1] \
+            and f[i, j] > f[i+1, j+1]:
 				result[i, j] = 1
 
 	pc, pr = np.where(result == 1)

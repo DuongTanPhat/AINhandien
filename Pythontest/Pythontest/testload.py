@@ -123,29 +123,52 @@ print("Da train xong")
 #trainSVM()
 #print("xong")
 window = tk.Tk()
-window.title("AI Nhan dien")
+window.title("AI Nhận diện chữ ký")
 
-myLabel = tk.Label(window,text="Duong dan:   " )
+myLabel = tk.Label(window,text="Đường dẫn:   " )
 myLabel2 = tk.Label(window,text="" )
 window.geometry('350x200')
 myLabel.grid(column = 0,row=1)
 myLabel2.grid(column = 1,row=1)
 myLabel3 = tk.Label(window,text="" )
 myLabel3.grid(column = 1,row=5)
+myLabel4 = tk.Label(window,text="" )
+myLabel4.grid(column = 1,row=6)
 def clicked_open():
+    myLabel4.config(text="Đang chọn ảnh ... ")
+    window.update()
     window.filename = tk.filedialog.askopenfilename(title="Select A File", filetype=(("all files", "*"),("jpg files","*.jpg"),("png files","*.png"),("jpeg files","*.jpeg")))
     myLabel2.config(text=window.filename)
+    if(window.filename != ''):
+        myLabel4.config(text="Đã chọn ảnh")
+        window.update()
+    else:
+        myLabel4.config(text="Chưa chọn ảnh")
+        window.update()
 bt = Button(window,text="Open File", command=clicked_open)
 def clicked_sift():
+    if(window.filename == ''):
+        myLabel4.config(text="Bạn chưa chọn ảnh !!!")
+        window.update()
+        return
+    myLabel4.config(text="Đang kiểm tra ... ")
+    window.update()
     img2 = cv.imread(window.filename)
-    img_list = detectOj(img2)
+    img = xulyanh(img2)
+    img = cv.cvtColor(img, cv.COLOR_GRAY2BGR)
+    img_list = detectOj(img)
     for k in range(len(img_list)):
+        
         cv.imshow('ex2',img_list[k])
         cv.waitKey(0)
         cv.destroyAllWindows()
-        img = xulyanh(img_list[k])
-        img = cv.cvtColor(img, cv.COLOR_GRAY2BGR)
-        listkp = docdactrung1(img)
+        myLabel4.config(text="Đang kiểm tra ... ")
+        window.update()
+        #
+        # img = xulyanh(img_list[k])
+        #
+        #img = cv.cvtColor(img, cv.COLOR_GRAY2BGR)
+        listkp = docdactrung1(img_list[k])
         listtrain0 = []
         listtrain1 = []
         listtrain2 = []
@@ -190,7 +213,6 @@ def clicked_sift():
         datalist.append(listtrain9)
         hoa  =0
         phat =0
-        dung =0
         respond = 0
         res = []
         for i in range(10):
@@ -203,18 +225,16 @@ def clicked_sift():
                     hoa+=1;
                 elif respond==2:
                     phat+=1;
-                else:
-                    dung+=1;
-        if max(hoa,phat,dung) == hoa:
+        if max(hoa,phat) == hoa:
             myLabel3.config(text="Chữ ký của Hòa "+str(hoa*(100/len(listkp)))+"%")
             window.update()
-        elif max(hoa,phat,dung) == phat:
+        elif max(hoa,phat) == phat:
             myLabel3.config(text="Chữ ký của Phát "+str(phat*(100/len(listkp)))+"%")
             window.update()
-        else:
-            myLabel3.config(text="Chữ ký của Dũng "+str(dung*(100/len(listkp)))+"%") 
+        myLabel4.config(text="Đã có kết quả !!!")
+        window.update()
         #print(res[0:len(listkp)])
-bt2 = Button(window,text="Nhan dien", command=clicked_sift)
+bt2 = Button(window,text="Nhận diện", command=clicked_sift)
 bt2.grid(column = 0,row = 3)
 bt.grid(column =0,row = 0)
 window.mainloop()    
