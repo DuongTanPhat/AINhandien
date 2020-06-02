@@ -5,7 +5,7 @@ import tkinter as tk
 from tkinter import filedialog
 import random as rng
 import operator
-img = cv.imread("H:/Github/AINhandien/ex/hoa/2.jpg")
+img = cv.imread("C:/Github/AINhandien/ex/hoa/2.jpg")
 gray= cv.cvtColor(img,cv.COLOR_BGR2GRAY)
 
 sift = cv.xfeatures2d.SIFT_create()

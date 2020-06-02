@@ -126,7 +126,7 @@ def docdactrungnhieu():
     #trainDataSign = np.zeros((20,2*10, 4), dtype=np.int32)
     #listnew = trainDataSign
     for i in range(20):
-        url = "H:/Github/AINhandien/ex/hoa/"+str(i)+".jpg"
+        url = "C:/Github/AINhandien/ex/hoa/"+str(i)+".jpg"
         img = cv.imread(url)
         img_list = detectOj(img)
         for k in range(len(img_list)):
@@ -170,7 +170,7 @@ def docdactrungnhieu():
     # for i in range(a):
     #     labellist.append(1)
     for i in range(20):
-        url = "H:/Github/AINhandien/ex/phat/"+str(i)+".jpg"
+        url = "C:/Github/AINhandien/ex/phat/"+str(i)+".jpg"
         img = cv.imread(url)
         img_list = detectOj(img)
         for k in range(len(img_list)):
@@ -371,11 +371,11 @@ def clicked_sift():
             respond=svm[i].predict(sampleMat)[1]
             res.append(respond)
             if respond==1 :
-                hoa+=1;
+                hoa+=1
             elif respond==2:
-                phat+=1;
+                phat+=1
             else:
-                dung+=1;
+                dung+=1
     # respond = np.empty((len(dactrung), 1), dtype=np.int32)
     # for i in range(dactrung.__len__()):
     #     sampleMat = np.matrix([dactrung[i]], dtype=np.float32)

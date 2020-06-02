@@ -4,10 +4,12 @@ import cv2 as cv
 from tkinter.ttk import Frame, Button, Style
 import tkinter as tk
 from tkinter import filedialog, BOTH
+
 import random as rng
 import operator
 from PIL import Image, ImageTk
 from tienxuly import xulyanh
+
 from demo.thuatToan import *
 
 def khoangcachchenhlech(x1,y1,x2,y2):
@@ -117,7 +119,7 @@ for i in range(10):
 
     
 ## [init]
-    svm[i] = cv.ml.SVM_load(str(i)+".dat")
+    svm[i] = cv.ml.SVM_load("C:/Github/"+str(i)+".dat")
 ## [train]
 print("Da train xong")
 #trainSVM()
@@ -222,9 +224,9 @@ def clicked_sift():
                 respond=svm[i].predict(sampleMat)[1]
                 res.append(respond)
                 if respond==1 :
-                    hoa+=1;
+                    hoa+=1
                 elif respond==2:
-                    phat+=1;
+                    phat+=1
         if max(hoa,phat) == hoa:
             myLabel3.config(text="Chữ ký của Hòa "+str(hoa*(100/len(listkp)))+"%")
             window.update()
