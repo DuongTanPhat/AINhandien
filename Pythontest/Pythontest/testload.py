@@ -119,7 +119,7 @@ for i in range(10):
 
     
 ## [init]
-    svm[i] = cv.ml.SVM_load("C:/Github/"+str(i)+".dat")
+    svm[i] = cv.ml.SVM_load(str(i)+".dat")
 ## [train]
 print("Da train xong")
 #trainSVM()
