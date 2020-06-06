@@ -29,27 +29,63 @@ def getContours(img,imgDil,imgContour):
         area = cv2.contourArea(cnt)
         areaMin = cv2.getTrackbarPos("Area", "Parameters")
         if area > 1500:
-            # peri = cv2.arcLength(cnt, True)
-            # approx = cv2.approxPolyDP(cnt, 0.02 * peri, True)
-            # x , y , w, h = cv2.boundingRect(approx)
+            peri = cv2.arcLength(cnt, True)
+            approx = cv2.approxPolyDP(cnt, 0.02 * peri, True)
+            x , y , w, h = cv2.boundingRect(approx)
+            zone = w*h
             # #listlocate.append((x,y,w,h))
             # listimg.append(dropImage(img,x,y,w,h))
             # cv2.rectangle(imgContour, (x , y ), (x + w , y + h ), (0, 255, 0), 5)
-            listarea.append((area,cnt))
+            listarea.append((zone,x,y,w,h))
     listarea=sorted(listarea,key=operator.itemgetter(0),reverse=True)
     for cnt in listarea:
-        peri = cv2.arcLength(cnt[1], True)
-        approx = cv2.approxPolyDP(cnt[1], 0.02 * peri, True)
-        x , y , w, h = cv2.boundingRect(approx)
+        x , y , w, h = cnt[1:5]
+        a = x+w
+        b = y+h
         can = True
         for i in range(len(listlocate)):
-            if listlocate[i][0] <= x and listlocate[i][1] <= y and listlocate[i][0] + listlocate[i][2] >= w + x and listlocate[i][1] + listlocate[i][3] >= h + y:
+            x1 = listlocate[i][0]
+            y1 = listlocate[i][1]
+            a1 = listlocate[i][0] + listlocate[i][2]
+            b1 = listlocate[i][1] + listlocate[i][3]
+            if (x1 <= x and y1 <= y and a1 >= a and b1 >= b):
+                can = False
+                break
+            if (x>=x1 and y>=y1 and x <= a1 and y<=b1):
+                listlocate[i][2] = max(a,a1) - x1
+                listlocate[i][3] = max(b,b1) - y1
+                can = False
+                break
+            if (x>=x1 and b>=y1 and (x<=a1 or b<=b1)):
+                listlocate[i][0] = x1
+                listlocate[i][1] = y
+                listlocate[i][2] = max(a,a1) - x1
+                listlocate[i][3] = max(b,b1) - y
+                can = False
+                break
+            if (a>=x1 and y>=y1 and (a<=a1 or y<=b1)):
+                listlocate[i][0] = x
+                listlocate[i][1] = y1
+                listlocate[i][2] = max(a,a1) - x
+                listlocate[i][3] = max(b,b1) - y1
+                can = False
+                break
+            if (a >= x1 and b>= y1 and (a<= a1 or b<= b1)):
+                listlocate[i][0] = x
+                listlocate[i][1] = y
+                listlocate[i][2] = max(a,a1)  - x
+                listlocate[i][3] = max(b,b1) - y
                 can = False
                 break
         if can:
-            listlocate.append((x,y,w,h))
-            listimg.append(dropImage(img,x,y,w,h))
-            cv2.rectangle(imgContour, (x , y ), (x + w , y + h ), (0, 255, 0), 5)
+            listlocate.append([x,y,w,h])
+    for i in listlocate:
+        x = i[0]
+        y = i[1]
+        w = i[2]
+        h = i[3]
+        listimg.append(dropImage(img,x,y,w,h))
+        cv2.rectangle(imgContour, (x , y ), (x + w , y + h ), (0, 255, 0), 5)
     return listimg
           
 def detectOj(img):

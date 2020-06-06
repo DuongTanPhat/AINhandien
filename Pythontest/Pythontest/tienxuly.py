@@ -135,12 +135,15 @@ def donganh(img):
     img = cv.dilate(img,a)
     return img
 def xulyanh(img):
+    img = cv.resize(img,(800,400))
     img = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
+    img = cv.blur(img,ksize = (5,5))
     img = nguongtongquat(img)
     img = locanh(img)
     img = catanh(img)
     if img.shape[0] > img.shape[1]: img = ndimage.rotate(img,90)
     img = donganh(img)
+    img = cv.blur(img,ksize = (5,5))
     cv.imshow('ex2',img)
     cv.waitKey(0)
     cv.destroyAllWindows()

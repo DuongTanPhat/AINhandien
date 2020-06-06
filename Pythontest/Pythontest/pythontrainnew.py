@@ -14,8 +14,8 @@ def khoangcachchenhlech(x1,y1,x2,y2):
     #kc = math.sqrt(math.pow(x2-x1,2)+math.pow(y2-y1,2))
     return kc
 def docdactrung1(img):
-    img = cv.resize(img,(800,400))
-    gray = img
+    #img = cv.resize(img,(800,400))
+    #gray = img
     gray = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
     dst = cv.cornerHarris(gray,2,5,0.04)
     sift = cv.xfeatures2d.SIFT_create()
@@ -128,6 +128,8 @@ def docdactrungnhieu():
     for i in range(20):
         url = "C:/Github/AINhandien/ex/hoa/"+str(i)+".jpg"
         img = cv.imread(url)
+        img = xulyanh(img)
+        img = cv.cvtColor(img, cv.COLOR_GRAY2BGR)
         img_list = detectOj(img)
         for k in range(len(img_list)):
             listkp = docdactrung1(img_list[k])
@@ -172,6 +174,8 @@ def docdactrungnhieu():
     for i in range(20):
         url = "C:/Github/AINhandien/ex/phat/"+str(i)+".jpg"
         img = cv.imread(url)
+        img = xulyanh(img)
+        img = cv.cvtColor(img, cv.COLOR_GRAY2BGR)
         img_list = detectOj(img)
         for k in range(len(img_list)):
             listkp = docdactrung1(img_list[k])
@@ -313,7 +317,8 @@ def clicked_open():
     myLabel2.config(text=window.filename)
 bt = tk.Button(window,text="Open File", command=clicked_open)
 def clicked_sift():
-    img = xulyanh(window.filename)
+    img = cv.imread(window.filename)
+    img = xulyanh(img)
     img = cv.cvtColor(img, cv.COLOR_GRAY2BGR)
     listkp = docdactrung1(img)
     listtrain0 = []
