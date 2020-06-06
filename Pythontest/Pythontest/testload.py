@@ -81,6 +81,7 @@ def docdactrung1(img):
         kc=sorted(kc,key=operator.itemgetter(0))
         can = True
         num = 0
+        if i >= len(kp) : break
         while can:
             if listed[kc[num][2]]!=1:
                 listkp.append(datakp[kc[num][2]])
@@ -89,7 +90,7 @@ def docdactrung1(img):
                 can = False
             num += 1
 
-    for i in range(count):
+    for i in range(len(listkp)):
         # listkp[i][1] = listkp[i][1]*200/img.shape[0]
         # listkp[i][2]= listkp[i][2]*200/img.shape[1]
         cv.circle(img,(int(listkp[i][1]),int(listkp[i][2])),3,(255,0,0),2)
